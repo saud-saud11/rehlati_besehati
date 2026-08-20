@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import '../../core/design_system/colors.dart';
 import 'package:go_router/go_router.dart';
 
-class TripStyleScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'trip_provider.dart';
+
+class TripStyleScreen extends ConsumerStatefulWidget {
   const TripStyleScreen({super.key});
 
   @override
-  State<TripStyleScreen> createState() => _TripStyleScreenState();
+  ConsumerState<TripStyleScreen> createState() => _TripStyleScreenState();
 }
 
-class _TripStyleScreenState extends State<TripStyleScreen> {
+class _TripStyleScreenState extends ConsumerState<TripStyleScreen> {
   final List<Map<String, dynamic>> _styles = [
     {'title': 'فنادق ومنتجعات', 'icon': '🏨', 'selected': true},
     {'title': 'مدن وتسوق', 'icon': '🏙️', 'selected': false},
@@ -100,6 +103,11 @@ class _TripStyleScreenState extends State<TripStyleScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  final selectedStyles = _styles
+                      .where((s) => s['selected'] == true)
+                      .map((s) => s['title'] as String)
+                      .toList();
+                  ref.read(tripProvider.notifier).setStyles(selectedStyles);
                   context.push('/trip-preparation');
                 },
                 child: const Text('أنشئ الرحلة'),

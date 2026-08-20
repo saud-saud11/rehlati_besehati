@@ -5,22 +5,27 @@ import 'package:go_router/go_router.dart';
 import '../rules_engine/what_changed_engine.dart';
 import 'widgets/what_changed_bottom_sheet.dart';
 
-class TripDashboardScreen extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'trip_provider.dart';
+
+class TripDashboardScreen extends ConsumerWidget {
   const TripDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trip = ref.watch(tripProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          _buildSliverAppBar(context),
+          _buildSliverAppBar(context, trip),
           SliverToBoxAdapter(
             child: Column(
               children: [
                 _buildWeatherStrip(context),
                 const SizedBox(height: 16),
-                _buildCountdown(context),
+                _buildCountdown(context, trip),
                 const SizedBox(height: 24),
                 _buildReadinessCard(context),
                 const SizedBox(height: 24),
@@ -36,7 +41,6 @@ class TripDashboardScreen extends StatelessWidget {
       bottomNavigationBar: _buildBottomNav(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Demo: Add Labuan Bajo
           final insight = TripChangeInsight(
             title: 'إضافة وجهة جديدة غيرت بعض الاستعدادات',
             description: 'تحتاج الرحلة إلى تقييم وقاية الملاريا.',
@@ -53,7 +57,11 @@ class TripDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSliverAppBar(BuildContext context) {
+  Widget _buildSliverAppBar(BuildContext context, TripState trip) {
+    final destination = trip.destination.isNotEmpty ? trip.destination : 'إندونيسيا';
+    final dates = trip.dates.isNotEmpty ? trip.dates : '10–24 December • 14 يوم';
+    final travelers = trip.travelers.isNotEmpty ? trip.travelers : '4 مسافرين';
+
     return SliverAppBar(
       expandedHeight: 250,
       pinned: true,
@@ -80,18 +88,18 @@ class TripDashboardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'إندونيسيا 🇮🇩',
+                    '$destination 🌍',
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(color: Colors.white),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Bali • Lombok • Labuan Bajo',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  Text(
+                    trip.styles.isNotEmpty ? trip.styles.join(' • ') : 'رحلة استكشافية',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    '10–24 December • 14 يوم • 4 مسافرين',
-                    style: TextStyle(color: AppColors.sand, fontSize: 14),
+                  Text(
+                    '$dates • $travelers',
+                    style: const TextStyle(color: AppColors.sand, fontSize: 14),
                   ),
                 ],
               ),
@@ -123,10 +131,10 @@ class TripDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCountdown(BuildContext context) {
+  Widget _buildCountdown(BuildContext context, TripState trip) {
     return Center(
       child: Text(
-        'باقي 43 يوم ✈️',
+        'باقي 43 يوم ✈️', // This would be calculated from trip.dates in a real app
         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
           color: AppColors.primary,
         ),

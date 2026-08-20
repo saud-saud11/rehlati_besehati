@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/design_system/colors.dart';
+import '../trip_builder/trip_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -144,11 +146,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(16.0),
                         child: SizedBox(
                           width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              context.push('/trip-style');
-                            },
-                            child: const Text('جهّز رحلتي'),
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              return ElevatedButton(
+                                onPressed: () {
+                                  if (_selectedDestination != null) {
+                                    ref.read(tripProvider.notifier).setDestination(_selectedDestination!);
+                                  }
+                                  if (_selectedDates != null) {
+                                    ref.read(tripProvider.notifier).setDates(_selectedDates!);
+                                  }
+                                  if (_selectedTravelers != null) {
+                                    ref.read(tripProvider.notifier).setTravelers(_selectedTravelers!);
+                                  }
+                                  context.push('/trip-style');
+                                },
+                                child: const Text('جهّز رحلتي'),
+                              );
+                            }
                           ),
                         ),
                       ),
