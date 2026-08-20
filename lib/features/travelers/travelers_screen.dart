@@ -83,7 +83,8 @@ class _TravelersScreenState extends State<TravelersScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.pop();
+                    final total = _adults + _children + _infants;
+                    context.pop('$total مسافر');
                   },
                   child: const Text('التالي'),
                 ),

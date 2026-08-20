@@ -12,6 +12,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isTravelMode = false;
+  String? _selectedDestination;
+  String? _selectedDates;
+  String? _selectedTravelers;
 
   @override
   Widget build(BuildContext context) {
@@ -104,27 +107,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildSearchRow(
                         icon: Icons.location_on_outlined,
                         title: 'الوجهة',
-                        subtitle: 'ابحث عن دولة أو مدينة',
-                        onTap: () {
-                          context.push('/destination-search');
+                        subtitle: _selectedDestination ?? 'ابحث عن دولة أو مدينة',
+                        onTap: () async {
+                          final result = await context.push<String>('/destination-search');
+                          if (result != null) {
+                            setState(() => _selectedDestination = result);
+                          }
                         },
                       ),
                       const Divider(height: 1, indent: 56, endIndent: 24),
                       _buildSearchRow(
                         icon: Icons.calendar_month_outlined,
                         title: 'تاريخ الرحلة',
-                        subtitle: 'الذهاب - العودة',
-                        onTap: () {
-                          context.push('/date-selection');
+                        subtitle: _selectedDates ?? 'الذهاب - العودة',
+                        onTap: () async {
+                          final result = await context.push<String>('/date-selection');
+                          if (result != null) {
+                            setState(() => _selectedDates = result);
+                          }
                         },
                       ),
                       const Divider(height: 1, indent: 56, endIndent: 24),
                       _buildSearchRow(
                         icon: Icons.people_outline,
                         title: 'المسافرون',
-                        subtitle: 'أضف المسافرين',
-                        onTap: () {
-                          context.push('/travelers');
+                        subtitle: _selectedTravelers ?? 'أضف المسافرين',
+                        onTap: () async {
+                          final result = await context.push<String>('/travelers');
+                          if (result != null) {
+                            setState(() => _selectedTravelers = result);
+                          }
                         },
                       ),
                       

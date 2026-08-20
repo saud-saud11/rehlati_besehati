@@ -98,7 +98,9 @@ class _DateSelectionScreenState extends State<DateSelectionScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          context.pop();
+                          final startStr = DateFormat('dd MMM').format(_startDate!);
+                          final endStr = DateFormat('dd MMM').format(_endDate!);
+                          context.pop('$startStr - $endStr');
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),

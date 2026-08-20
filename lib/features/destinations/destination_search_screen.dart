@@ -85,7 +85,7 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                     ),
                   ),
                   onTap: () {
-                    context.pop();
+                    context.pop(dest['country']);
                   },
                 );
               },
